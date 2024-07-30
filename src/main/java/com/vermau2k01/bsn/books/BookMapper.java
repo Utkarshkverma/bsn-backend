@@ -1,5 +1,6 @@
 package com.vermau2k01.bsn.books;
 
+import com.vermau2k01.bsn.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +31,18 @@ public class BookMapper {
                 .rate(books.getRate())
                 .sharable(books.isSharable())
                 .owner(books.getOwner().getFullName())
+                .build();
+    }
+
+    public BorrowedBookResponse toBorrowedBookResponse(BookTransactionHistory history) {
+        return BorrowedBookResponse.builder()
+                .id(history.getBook().getId())
+                .title(history.getBook().getTitle())
+                .authorName(history.getBook().getAuthorName())
+                .isbn(history.getBook().getIsbn())
+                .rate(history.getBook().getRate())
+                .returned(history.isReturned())
+                .returnedApproved(history.isReturnApproved())
                 .build();
     }
 }

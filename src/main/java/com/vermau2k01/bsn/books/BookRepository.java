@@ -23,5 +23,4 @@ public interface BookRepository extends JpaRepository<Books, Integer>, JpaSpecif
     Page<Books> findAllDisplayableBooks(Pageable pageable, Integer userId);
 
 
-
 }

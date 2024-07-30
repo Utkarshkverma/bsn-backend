@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,6 +86,19 @@ public class GlobalExceptionHandler {
                         ExceptionResponse
                                 .builder()
                                 .validationErrors(errors)
+                                .build()
+                );
+    }
+    @ExceptionHandler(OperationNotSupportedException.class)
+    public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedException exp)
+    {
+        exp.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ExceptionResponse
+                                .builder()
+                                .error(exp.getMessage())
                                 .build()
                 );
     }
