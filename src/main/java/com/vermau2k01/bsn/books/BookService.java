@@ -3,6 +3,7 @@ package com.vermau2k01.bsn.books;
 
 import com.vermau2k01.bsn.common.PageResponse;
 import com.vermau2k01.bsn.exception.OperationNotPermittedException;
+import com.vermau2k01.bsn.files.IfileStorageService;
 import com.vermau2k01.bsn.history.BookTransactionHistory;
 import com.vermau2k01.bsn.history.BookTransactionHistoryRepository;
 import com.vermau2k01.bsn.user.Users;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +28,7 @@ public class BookService implements IBookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookTransactionHistoryRepository transactionHistoryRepository;
+    private final IfileStorageService fileStorageService;
 
     @Override
     public Integer save(BookRequest request, Authentication connectedUser) {
@@ -221,8 +225,22 @@ public class BookService implements IBookService {
         BookTransactionHistory bookTransactionHistory = transactionHistoryRepository.findByBookIdAndOwnerId(bookId, user.getId())
                 .orElseThrow(() -> new OperationNotPermittedException("The book is not returned yet so you cannot approve it"));
 
-        bookTransactionHistory.setReturned(false);
+        bookTransactionHistory.setReturnApproved(true);
         return transactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    @Override
+    public void uploadBookCover(MultipartFile file, Authentication connectedUser, Integer bookId) {
+        Books book = bookRepository
+                .findById(bookId)
+                .orElseThrow(()-> new EntityNotFoundException
+                        ("No book found with ID :: "+ bookId));
+
+        Users user = (Users) connectedUser.getPrincipal();
+
+        var bookCover = fileStorageService.saveFile(file, book, user.getId());
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
     }
 
 

@@ -1,5 +1,6 @@
 package com.vermau2k01.bsn.books;
 
+import com.vermau2k01.bsn.files.FileUtils;
 import com.vermau2k01.bsn.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class BookMapper {
                 .rate(books.getRate())
                 .sharable(books.isSharable())
                 .owner(books.getOwner().getFullName())
+                .coverImage(FileUtils.readFileFromLocation(books.getBookCover()))
                 .build();
     }
 

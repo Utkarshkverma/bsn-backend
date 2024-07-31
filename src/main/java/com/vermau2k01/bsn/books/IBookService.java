@@ -2,6 +2,7 @@ package com.vermau2k01.bsn.books;
 
 import com.vermau2k01.bsn.common.PageResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IBookService {
 
@@ -26,4 +27,6 @@ public interface IBookService {
     Integer returnBook(Integer bookId, Authentication connectedUser);
 
     Integer approvedReturnBook(Integer bookId, Authentication connectedUser);
+
+    void uploadBookCover(MultipartFile file, Authentication connectedUser, Integer bookId);
 }
